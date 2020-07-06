@@ -37,13 +37,13 @@
         {
             let newParagraph = document.createElement("p");
 
-            newParagraph.textContent ="Welcome!";
+            newParagraph.textContent ="Welcome to my Mini Portfolio!";
 
             jumbotron.appendChild(newParagraph);
 
             let newDiv = document.createElement("div");
 
-            newDiv.innerHTML ="My name is Aileen and this is my Mini Portfolio.";
+            newDiv.innerHTML ="Stay Happy! Stay Safe!";
 
             jumbotron.appendChild(newDiv);
 
@@ -52,28 +52,7 @@
         return false;
     }
 
-    function addParagraphsToProject1() 
-    {
-        let jumbotron = document.getElementsByClassName("jumbotron")[0];
-
-        if (jumbotron) 
-        {
-            let newParagraph = document.createElement("p");
-
-            newParagraph.textContent ="Welcome!";
-
-            jumbotron.appendChild(newParagraph);
-
-            let newDiv = document.createElement("div");
-
-            newDiv.innerHTML ="This is my Mini Portfolio.";
-
-            jumbotron.appendChild(newDiv);
-
-            return true;
-        }
-        return false;
-    }
+    //VALIDATE FORM
     function validateForm()
     {
         let contactForm = document.forms[0];
@@ -120,6 +99,7 @@
             {
                 event.preventDefault();
                 console.log("Submit Button Clicked");
+                window.location = './index.html'
             });
         }
         return false;
@@ -153,8 +133,6 @@
        }
 
     } 
-
-
 
     window.addEventListener("load", Start);
 
