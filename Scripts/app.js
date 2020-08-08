@@ -100,9 +100,247 @@
                 event.preventDefault();
                 console.log("Submit Button Clicked");
                 window.location = './index.html'
+                
             });
         }
         return false;
+    }
+
+    function setPageContent(id)
+    {
+        document.title = id;
+        window.history.pushState("", id, "/"+id.toLowerCase());
+        highlightActiveLink(id);
+
+        switch(id)
+        {
+            case "Home":
+                HomeContent();
+                break;
+            case "Contact":
+                ContactContent();
+                break;
+            case "Projects":
+                ProjectsContent();
+                break;
+        }
+
+        loadFooter();
+    }
+
+    function InitializeSite()
+    {
+        console.info("Header Loading...");
+
+        let XHR = new XMLHttpRequest();
+
+         XHR.open("GET", "COMP125-A3/Views/partials/header.html");
+
+        XHR.send();
+
+        XHR.addEventListener("readystatechange", function(){
+            if((XHR.readyState === 4) && (XHR.status === 200))
+            {
+                let header = document.getElementsByTagName("header")[0];
+
+                let headerData = XHR.responseText;
+
+                header.innerHTML = headerData;
+
+                setPageContent("Home");
+
+                let navLinks = document.getElementsByTagName("a");
+
+                for (const link of navLinks) 
+                {
+                    link.addEventListener("click", (event) =>{
+                        event.preventDefault();
+
+                        let id = link.getAttribute("id");
+
+                        setPageContent(id);
+
+                    });
+                }
+            }
+        });
+    }
+
+    function loadParagraphsData()
+    {
+        console.info("Paragraphs Loading...");
+
+        let XHR = new XMLHttpRequest();
+
+        XHR.open("GET", "COMP125-A3/Scripts/paragraphs.json");
+
+        XHR.send();
+
+        XHR.addEventListener("readystatechange", function(){
+            if((XHR.readyState === 4) && (XHR.status === 200))
+            {
+
+                let dataFile = JSON.parse(XHR.responseText);
+                let paragraphs = dataFile.paragraphs;
+
+                console.log(paragraphs);
+
+                let paragraphsArray = [];
+
+                for(const precord of paragraphs)
+                {
+                    let paragraphs = new pObjects.Paragraphs();
+                    paragraphs.setParagraphs(precord);
+                    paragraphsArray.push(paragraphs);
+                }
+
+                let jumbotron = document.getElementsByClassName("jumbotron")[0];
+                for(const paragraphs of paragraphsArray)
+                {
+                    let newParagraph = document.createElement("p");
+                    newParagraph.textContent = 
+                    `
+                    ${paragraphs.value}
+                    `
+                    jumbotron.appendChild(newParagraph);
+                }
+                
+            }
+        });
+    }
+
+    function loadAddressBookData()
+    {
+        console.info("AddressBook Loading...");
+        let XHR = new XMLHttpRequest();
+        XHR.open("GET", "COMP125-A3/Data/addressbook.json");
+        XHR.send();
+        XHR.addEventListener("readystatechange", function(){
+            if((XHR.readyState === 4) && (XHR.status === 200))
+            {
+
+                let dataFile = JSON.parse(XHR.responseText);
+                let addressBook = dataFile.addressBook;
+
+                console.log(addressBook);
+
+                let contactList = [];
+
+                for (const record of addressBook) 
+                {
+                    let contact = new objects.Contact();
+                    contact.setContact(record);
+                    contactList.push(contact);
+                }
+
+                console.log(contactList);
+
+                let tableBody = document.getElementById("tableBody");
+                for (const contact of contactList) 
+                {
+                    let row = document.createElement('tr');
+                    row.innerHTML = 
+                    `
+                    <td>${contact.firstName}</td>
+                    <td>${contact.lastName}</td>
+                    <td>${contact.contactNumber}</td>
+                    <td>${contact.emailAddress}</td>
+                    `
+                    tableBody.appendChild(row);
+                }
+
+               
+            }
+        });
+    }
+
+    function loadFooter()
+    {
+        console.info("Footer Loading...");
+
+        let XHR = new XMLHttpRequest();
+        XHR.open("GET", "COMP125-A3/Views/partials/footer.html");
+        XHR.send();
+
+        XHR.addEventListener("readystatechange", function(){
+            if((XHR.readyState === 4) && (XHR.status === 200))
+            {
+                let footer = document.getElementsByTagName("footer")[0];
+
+                let footerData = XHR.responseText;
+
+                footer.innerHTML = footerData;
+            }
+        });
+    }
+
+    function ContactContent()
+    {
+        console.info("Contact Content Loading...");
+
+        let XHR = new XMLHttpRequest();
+
+        XHR.open("GET", "COMP125-A3/Views/content/contact.html");
+        XHR.send();
+
+        XHR.addEventListener("readystatechange", function(){
+            if((XHR.readyState === 4) && (XHR.status === 200))
+            {
+                let main = document.getElementsByTagName("main")[0];
+
+                let mainData = XHR.responseText;
+
+                main.innerHTML = mainData;
+
+                validateForm();
+            }
+        });
+    }
+
+    function HomeContent()
+    {
+        console.info("Home Content Loading...");
+
+        let XHR = new XMLHttpRequest();
+
+        XHR.open("GET", "COMP125-A3/Views/content/home.html");
+        XHR.send();
+
+        XHR.addEventListener("readystatechange", function(){
+            if((XHR.readyState === 4) && (XHR.status === 200))
+            {
+                let main = document.getElementsByTagName("main")[0];
+
+                let mainData = XHR.responseText;
+
+                main.innerHTML = mainData;
+
+                loadParagraphsData();
+
+            }
+        });
+    }
+
+    function ProjectsContent()
+    {
+        console.info("Projects Content Loading...");
+
+        let XHR = new XMLHttpRequest();
+        XHR.open("GET", "COMP125-A3/Views/content/projects.html");
+        XHR.send();
+
+        XHR.addEventListener("readystatechange", function(){
+            if((XHR.readyState === 4) && (XHR.status === 200))
+            {
+                let main = document.getElementsByTagName("main")[0];
+
+                let mainData = XHR.responseText;
+
+                main.innerHTML = mainData;
+
+                loadAddressBookData();
+            }
+        });
     }
 
     function Start()
